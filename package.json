@@ -1,0 +1,21 @@
+{
+  "name": "tg-miniapp-template",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "preact": "^10.28.4"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.3",
+    "vite": "^7.0.0",
+    "vitest": "^4.1.0",
+    "wrangler": "^4.75.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "my-game",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-03-13",
+  "routes": [
+    { "pattern": "my-game.example.com", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+  "analytics_engine_datasets": [
+    { "binding": "ANALYTICS", "dataset": "my_game" }
+  ],
+  "vars": {
+    "BOT_USERNAME": "my_game_bot",
+    "APP_SHORT_NAME": "play",
+    "ADMIN_CHAT_ID": ""
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "my-game-db", "database_id": "" }
+  ]
+}
