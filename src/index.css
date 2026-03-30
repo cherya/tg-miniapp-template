@@ -21,6 +21,7 @@ html, body, #app {
   height: 100%;
   display: flex;
   flex-direction: column;
+  padding-top: calc(var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px));
 }
 
 /* Menu */
@@ -32,6 +33,7 @@ html, body, #app {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  padding-bottom: max(20px, var(--tg-safe-area-inset-bottom, 0px));
 }
 
 .menu-subtitle {
@@ -251,4 +253,32 @@ html, body, #app {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Offline banner */
+
+.offline-banner {
+  position: fixed;
+  top: calc(var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px));
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 0;
+  background: var(--tg-theme-destructive-text-color, #b91c1c);
+  color: var(--tg-theme-text-color, #fff);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Build badge */
+
+.build-badge {
+  font-size: 10px;
+  color: var(--tg-theme-hint-color, #9ca3af);
+  opacity: 0.5;
+  margin-top: 12px;
 }

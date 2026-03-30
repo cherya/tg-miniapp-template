@@ -9,6 +9,15 @@ export function App({ userId }) {
   const [screen, setScreen] = useState('menu')
   const [animations, setAnimationsState] = useState(true)
   const [premium, setPremiumState] = useState(0)
+  const [offline, setOffline] = useState(!navigator.onLine)
+
+  useEffect(() => {
+    const goOffline = () => setOffline(true)
+    const goOnline = () => setOffline(false)
+    window.addEventListener('offline', goOffline)
+    window.addEventListener('online', goOnline)
+    return () => { window.removeEventListener('offline', goOffline); window.removeEventListener('online', goOnline) }
+  }, [])
 
   // Load settings
   useEffect(() => {
@@ -60,9 +69,12 @@ export function App({ userId }) {
     />
   }
 
+  const offlineBanner = offline ? <div class="offline-banner">{t('offline') || 'Offline'}</div> : null
+
   // Main menu — replace with your game
   return (
     <div id="game-root">
+      {offlineBanner}
       <div class="menu">
         <div class="menu-subtitle">My Game</div>
         <div class="menu-buttons">
@@ -73,6 +85,7 @@ export function App({ userId }) {
             {t('settings')}
           </button>
         </div>
+        <div class="build-badge">{typeof __COMMIT_HASH__ !== 'undefined' ? __COMMIT_HASH__ : ''}</div>
       </div>
     </div>
   )

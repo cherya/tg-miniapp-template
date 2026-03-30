@@ -16,6 +16,9 @@ const strings = {
     'settings.buyPremium': 'Buy Premium',
     'settings.premiumUser': 'Premium User',
     connection_error: 'Connection error',
+    offline: 'Offline',
+    open_in_telegram: 'Open in Telegram',
+    auth_failed: 'Auth failed',
     // Add game-specific keys here
   },
   ru: {
@@ -32,6 +35,9 @@ const strings = {
     'settings.buyPremium': 'Купить Премиум',
     'settings.premiumUser': 'Премиум',
     connection_error: 'Ошибка соединения',
+    offline: 'Нет сети',
+    open_in_telegram: 'Откройте в Telegram',
+    auth_failed: 'Ошибка авторизации',
   },
   // Add more languages
 }
