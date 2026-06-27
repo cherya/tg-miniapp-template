@@ -1,8 +1,6 @@
 // Telegram Bot webhook handler
 import { serverT } from './server-i18n.js'
 
-const PREMIUM_PRICE = 100
-
 export async function handleBotWebhook(request, env) {
   const secret = request.headers.get('X-Telegram-Bot-Api-Secret-Token')
   if (secret !== env.WEBHOOK_SECRET) {
@@ -30,7 +28,7 @@ export async function handleBotWebhook(request, env) {
     if (text === '/start' || text.startsWith('/start ')) {
       await sendWelcome(env, message.chat.id, lang)
     } else if (text === '/terms') {
-      await sendTerms(env, message.chat.id)
+      await sendTerms(env, message.chat.id, lang)
     } else if (text === '/support' || text === '/paysupport' || text.startsWith('/support ') || text.startsWith('/paysupport ')) {
       await handleSupport(env, message, lang)
     }
@@ -55,8 +53,9 @@ async function tgApi(env, method, body) {
 
 async function handlePreCheckout(env, query) {
   const { id, invoice_payload, total_amount, currency } = query
+  const price = parseInt(env.PREMIUM_PRICE) || 100
   const payloadMatch = invoice_payload?.match(/^premium_(\d+)$/)
-  const isValid = payloadMatch && total_amount === PREMIUM_PRICE && currency === 'XTR'
+  const isValid = payloadMatch && total_amount === price && currency === 'XTR'
 
   await tgApi(env, 'answerPreCheckoutQuery', isValid
     ? { pre_checkout_query_id: id, ok: true }
@@ -78,23 +77,38 @@ async function handleSuccessfulPayment(env, message) {
 }
 
 async function sendWelcome(env, chatId, lang) {
-  // Customize: change photo URL and web_app URL
-  await tgApi(env, 'sendPhoto', {
+  const domain = env.APP_DOMAIN || 'https://my-game.example.com'
+  const previewPhoto = '' // e.g. `${domain}/preview.png` — leave empty to skip photo
+
+  const reply_markup = {
+    inline_keyboard: [[
+      { text: serverT(lang, 'play_btn'), web_app: { url: domain } }
+    ]]
+  }
+
+  if (previewPhoto) {
+    const res = await tgApi(env, 'sendPhoto', {
+      chat_id: chatId,
+      photo: previewPhoto,
+      caption: serverT(lang, 'welcome_caption'),
+      reply_markup,
+    })
+    const data = await res.json()
+    if (data.ok) return
+    // Photo failed (404, invalid URL, etc.) — fall through to text-only
+  }
+
+  await tgApi(env, 'sendMessage', {
     chat_id: chatId,
-    photo: 'https://my-game.example.com/preview.png',
-    caption: serverT(lang, 'welcome_caption'),
-    reply_markup: {
-      inline_keyboard: [[
-        { text: serverT(lang, 'play_btn'), web_app: { url: 'https://my-game.example.com' } }
-      ]]
-    }
+    text: serverT(lang, 'welcome_caption'),
+    reply_markup,
   })
 }
 
-async function sendTerms(env, chatId) {
+async function sendTerms(env, chatId, lang) {
   await tgApi(env, 'sendMessage', {
     chat_id: chatId,
-    text: 'This is a cosmetic-only purchase. It provides visual effects and does not affect gameplay.\n\nAll sales are final. No refunds.',
+    text: serverT(lang, 'terms'),
   })
 }
 

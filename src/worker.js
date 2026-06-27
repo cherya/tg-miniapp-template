@@ -53,12 +53,12 @@ async function handleGetUser(request, env) {
 
 // --- Premium purchase ---
 
-const PREMIUM_PRICE = 100
-
 async function handlePremiumBuy(request, env) {
   const headers = { 'Content-Type': 'application/json' }
   const user = await authenticateUser(request, env)
   if (!user) return new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers })
+
+  const price = parseInt(env.PREMIUM_PRICE) || 100
 
   const res = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/createInvoiceLink`, {
     method: 'POST',
@@ -69,8 +69,7 @@ async function handlePremiumBuy(request, env) {
       payload: `premium_${user.id}`,
       provider_token: '',
       currency: 'XTR',
-      prices: [{ label: 'Premium Status', amount: PREMIUM_PRICE }],
-      // photo_url: 'https://my-game.example.com/premium.jpg',
+      prices: [{ label: 'Premium Status', amount: price }],
     }),
   })
 
